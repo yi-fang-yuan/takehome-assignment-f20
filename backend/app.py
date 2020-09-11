@@ -50,12 +50,12 @@ def hello_world():
 def mirror(name):
     data = {"name": name}
     return create_response(data)
-
+# part 1 and part 6
 @app.route("/shows", methods=['GET'])
 def get_all_shows():
     minEpisodes = request.args.get('minEpisodes')
-    minEpisodes = int(minEpisodes)
-    if minEpisodes is not None:
+    if minEpisodes is not None: 
+        minEpisodes = int(minEpisodes)
         shows = db.get('shows')
         new_shows = list(filter(lambda x: minEpisodes <= x.get('episodes_seen'), shows))
         if not new_shows:
@@ -63,13 +63,15 @@ def get_all_shows():
         return create_response({"shows": new_shows})
     return create_response({"shows": db.get('shows')})
 
+#part 2 
 @app.route("/shows/<id>", methods=['GET'])
 def get_id_shows(id):
     if db.getById('shows', int(id)) is None:
         return create_response(status=404, message="The provided Id does not exists!")
     return create_response({"result": db.getById('shows',int(id))})
 
-@app.route("/users",methods=['POST'])
+# part 3
+@app.route("/shows",methods=['POST'])
 def create_shows():
     if request.method == 'POST':
         req_data = request.get_json()
@@ -79,7 +81,8 @@ def create_shows():
             return create_response(status=422, message="There is no episodes_seen in the body!")
         db.create('shows',req_data)
         return create_response({"shows": db.get('shows')})
-        
+
+# part 5        
 @app.route("/shows/<id>", methods=['DELETE'])
 def delete_show(id):
     if db.getById('shows', int(id)) is None:
@@ -87,6 +90,7 @@ def delete_show(id):
     db.deleteById('shows', int(id))
     return create_response(message="Show deleted")
 
+#part 4
 @app.route("/shows/<id>", methods=['PUT'])
 def update_show(id):
     if request.method == 'PUT':
